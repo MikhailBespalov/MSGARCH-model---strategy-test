@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
+
 class Feed:
     def __init__(self, max_len=1000000):
         # self.open = []
@@ -130,7 +131,8 @@ class Backtest():
         max_position = 0
         risk_free_rate = 0.05
         for i in range(len(strategy_positions)):
-            cur_position = sum(abs(quantity) * cur_feeds[instrument].close[i] for instrument, quantity in strategy_positions[i].items())
+            cur_position = sum(abs(quantity) * cur_feeds[instrument].close[i] for instrument, quantity in
+                               strategy_positions[i].items())
             max_position = max(cur_position, max_position)
         daily_profit = np.array(daily_profit)
         daily_profit = daily_profit / max_position
@@ -141,24 +143,26 @@ class Backtest():
     def _compute_return(self, daily_profit, strategy_positions, cur_feeds):
         max_position = 0
         for i in range(len(strategy_positions)):
-            cur_position = sum(abs(quantity) * cur_feeds[instrument].close[i] for instrument, quantity in strategy_positions[i].items())
+            cur_position = sum(abs(quantity) * cur_feeds[instrument].close[i] for instrument, quantity in
+                               strategy_positions[i].items())
             max_position = max(cur_position, max_position)
         if max_position == 0:
             return 0
-        return sum(daily_profit)/max_position * 100
+        return sum(daily_profit) / max_position * 100
 
     def _compute_metrics(self, daily_profit, strategy_positions, cur_feeds):
         return {'total_profit': sum(daily_profit), 'num_trades': self._compute_num_trades(strategy_positions), \
-                'sortino_ratio':self._compute_sortino(daily_profit, strategy_positions, cur_feeds), 'return, %':self._compute_return(daily_profit, strategy_positions, cur_feeds)}
+                'sortino_ratio': self._compute_sortino(daily_profit, strategy_positions, cur_feeds),
+                'return, %': self._compute_return(daily_profit, strategy_positions, cur_feeds)}
 
     def _plot_metrics(self, daily_profit):
         profit = [0]
         for x in daily_profit:
             profit.append(profit[-1] + x)
-                
+
         plt.figure(figsize=(20, 10))
         plt.plot(profit, label='profit')
-        plt.legend() 
+        plt.legend()
 
     def run(self, plot=False, num_ticks=None):
         if num_ticks is None:
@@ -173,7 +177,7 @@ class Backtest():
             strategy_positions.append(position)
 
         daily_profit = self._compute_daily_profit(strategy_positions, cur_feeds)
-        
+
         if plot:
             self._plot_metrics(daily_profit)
             self._plot_strategy()
